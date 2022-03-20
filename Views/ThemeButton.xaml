@@ -1,0 +1,26 @@
+﻿<!--  ReSharper disable InconsistentNaming  -->
+<UserControl
+    x:Class="TextEditor.Views.ThemeButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
+    x:Name="userControl"
+    d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    d:DesignHeight="300"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <Grid>
+        <Button
+            x:Name="themeButton"
+            Background="{x:Null}"
+            BorderThickness="0"
+            Focusable="False"
+            Style="{x:Null}">
+            <Viewbox Margin="4">
+                <wpfui:Icon x:Name="icon" d:Glyph="WeatherMoon16" />
+            </Viewbox>
+        </Button>
+    </Grid>
+</UserControl>

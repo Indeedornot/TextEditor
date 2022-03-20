@@ -1,0 +1,86 @@
+﻿<Window
+    x:Class="TextEditor.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:TextEditor.ViewModels"
+    xmlns:views="clr-namespace:TextEditor.Views"
+    xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    Style="{StaticResource UiWindow}"
+    mc:Ignorable="d">
+    <Window.Resources />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  TitleBar  -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <wpfui:TitleBar Grid.Column="1" ApplicationNavigation="True" />
+
+            <views:ThemeButton
+                Grid.Column="0"
+                Width="30"
+                Margin="0,0,30,0"
+                HorizontalAlignment="Right"
+                DarkMode="WeatherMoon48"
+                LightMode="WeatherSunnyHigh48" />
+        </Grid>
+
+        <!--  Content  -->
+        <Grid Grid.Row="1" Margin="12,0,12,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--  Action Bar  -->
+            <DockPanel Grid.Row="0">
+                <DockPanel.DataContext>
+                    <viewModels:ToolbarViewModel />
+                </DockPanel.DataContext>
+                <Menu>
+                    <MenuItem Command="{Binding NewCommand}" Header="New" />
+
+                    <MenuItem Header="Open">
+                        <MenuItem Command="{Binding OpenFilesCommand}" Header="Files" />
+                        <MenuItem Command="{Binding OpenFolderCommand}" Header="Folder" />
+                    </MenuItem>
+
+                    <MenuItem Command="{Binding SaveCommand}" Header="Save">
+                        <MenuItem.InputBindings>
+                            <KeyBinding Command="{Binding SaveCommand}" Gesture="Ctrl+S" />
+                        </MenuItem.InputBindings>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Command="{Binding CutCommand}" Header="Cut" />
+                    <MenuItem Command="{Binding CopyCommand}" Header="Copy" />
+                    <MenuItem Command="{Binding PasteCommand}" Header="Paste" />
+                </Menu>
+            </DockPanel>
+
+            <!--  TextBox  -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.6*" />
+                    <ColumnDefinition Width="10*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <views:SidebarView />
+                </Grid>
+                <Grid Grid.Column="1">
+                    <views:TextPresenter />
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
