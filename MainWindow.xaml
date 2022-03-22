@@ -39,34 +39,12 @@
         <!--  Content  -->
         <Grid Grid.Row="1" Margin="12,0,12,12">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="6*" />
             </Grid.RowDefinitions>
 
             <!--  Action Bar  -->
-            <DockPanel Grid.Row="0">
-                <DockPanel.DataContext>
-                    <viewModels:ToolbarViewModel />
-                </DockPanel.DataContext>
-                <Menu>
-                    <MenuItem Command="{Binding NewCommand}" Header="New" />
-
-                    <MenuItem Header="Open">
-                        <MenuItem Command="{Binding OpenFilesCommand}" Header="Files" />
-                        <MenuItem Command="{Binding OpenFolderCommand}" Header="Folder" />
-                    </MenuItem>
-
-                    <MenuItem Command="{Binding SaveCommand}" Header="Save">
-                        <MenuItem.InputBindings>
-                            <KeyBinding Command="{Binding SaveCommand}" Gesture="Ctrl+S" />
-                        </MenuItem.InputBindings>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem Command="{Binding CutCommand}" Header="Cut" />
-                    <MenuItem Command="{Binding CopyCommand}" Header="Copy" />
-                    <MenuItem Command="{Binding PasteCommand}" Header="Paste" />
-                </Menu>
-            </DockPanel>
+            <views:ToolbarPresenter />
 
             <!--  TextBox  -->
             <Grid Grid.Row="1">
