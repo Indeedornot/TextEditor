@@ -6,32 +6,29 @@
     xmlns:local="clr-namespace:TextEditor.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:TextEditor.ViewModels"
-    d:DesignHeight="200"
-    d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
         <Grid.DataContext>
             <viewModels:ToolbarViewModel />
         </Grid.DataContext>
-        <Menu Margin="0">
-            <UniformGrid Rows="1">
-                <MenuItem Command="{Binding NewCommand}" Header="New" />
+        <Menu IsManipulationEnabled="False">
+            <MenuItem Command="{Binding NewCommand}" Header="New" />
 
-                <MenuItem Header="Open">
-                    <MenuItem Command="{Binding OpenFilesCommand}" Header="Files" />
-                    <MenuItem Command="{Binding OpenFolderCommand}" Header="Folder" />
-                </MenuItem>
 
-                <MenuItem Command="{Binding SaveCommand}" Header="Save">
-                    <MenuItem.InputBindings>
-                        <KeyBinding Command="{Binding SaveCommand}" Gesture="Ctrl+S" />
-                    </MenuItem.InputBindings>
-                </MenuItem>
+            <MenuItem Header="Open">
+                <MenuItem Command="{Binding OpenFilesCommand}" Header="Files" />
+                <MenuItem Command="{Binding OpenFolderCommand}" Header="Folder" />
+            </MenuItem>
 
-                <MenuItem Command="{Binding CutCommand}" Header="Cut" />
-                <MenuItem Command="{Binding CopyCommand}" Header="Copy" />
-                <MenuItem Command="{Binding PasteCommand}" Header="Paste" />
-            </UniformGrid>
+            <MenuItem Command="{Binding SaveCommand}" Header="Save">
+                <MenuItem.InputBindings>
+                    <KeyBinding Command="{Binding SaveCommand}" Gesture="Ctrl+S" />
+                </MenuItem.InputBindings>
+            </MenuItem>
+            <Separator />
+            <MenuItem Command="{Binding CutCommand}" Header="Cut" />
+            <MenuItem Command="{Binding CopyCommand}" Header="Copy" />
+            <MenuItem Command="{Binding PasteCommand}" Header="Paste" />
         </Menu>
     </Grid>
 </UserControl>

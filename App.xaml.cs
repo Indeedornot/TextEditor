@@ -17,5 +17,6 @@ public partial class App : Application
         // After that line, a BindingException will be thrown each time
         // a binding error occurs.
         BindingExceptionThrower.Attach();
+        WPFUI.Theme.Manager.SetSystemTheme();
     }
 }

@@ -6,20 +6,21 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
 
+using TextEditor.Events;
+using TextEditor.Helpers;
 using TextEditor.Models;
-using TextEditor.ViewModels.Events;
 
 namespace TextEditor.ViewModels;
 
-public partial class TextPresenterViewModel : ObservableRecipient
+public partial class TextPresenterViewModel : ObservableRecipient, ISaveFile
 {
     public TextPresenterViewModel()
     {
         Messenger.Register<SingleFileChosenEvent>(this, (r, m) => ReceiveFile(m.Value));
         Messenger.Register<SaveContentEvent>(this, (r, m) =>
         {
-            if (string.IsNullOrEmpty(TextBoxContent)) return;
-            SaveFile(ChosenFileItem.Path);
+            var path = ChosenFileItem.HasPath ? ChosenFileItem.Path : m.Value.Item1;
+            SaveFile(path, TextBoxContent, m.Value.Item2);
         });
     }
 
@@ -28,10 +29,6 @@ public partial class TextPresenterViewModel : ObservableRecipient
 
     [ObservableProperty]
     private bool _isReadOnly;
-
-    private readonly string _tempSaveDirectory =
-        Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.FullName //TextEditor Path
-        + @"\TemporaryFiles\";
 
     private FileItem _chosenFileItem = new();
 
@@ -47,12 +44,12 @@ public partial class TextPresenterViewModel : ObservableRecipient
             {
                 var fileInfo = new FileInfo(value.Path);
                 IsReadOnly = fileInfo.IsReadOnly;
-                GetFileContent(value.Path);
+                TextBoxContent = WritableItems.GetFileContnetString(value.Path);
             }
             else
             {
                 IsReadOnly = false;
-                if (!string.IsNullOrEmpty(TextBoxContent))
+                if (HasTextBoxContnet)
                     TextBoxContent = string.Empty;
             }
         }
@@ -66,6 +63,9 @@ public partial class TextPresenterViewModel : ObservableRecipient
         set
         {
             //If no file chosen
+
+            TextBoxLineCountFormatted = FormatLineCount(value.Split("\n").Length);
+
             if (!ChosenFileItem.IsValid)
             {
                 Messenger.Send(new SingleFileChosenEvent(
@@ -76,44 +76,32 @@ public partial class TextPresenterViewModel : ObservableRecipient
         }
     }
 
+    private bool HasTextBoxContnet => !string.IsNullOrEmpty(TextBoxContent);
+
+    private string _textBoxLineCountFormatted = string.Empty;
+
+    public string TextBoxLineCountFormatted
+    {
+        get { return _textBoxLineCountFormatted; }
+        private set
+        {
+            SetProperty(ref _textBoxLineCountFormatted, value);
+        }
+    }
+
+    private static string FormatLineCount(int lineCount)
+    {
+        return string.Join("\n", Enumerable.Range(0, lineCount));
+    }
+
     private void ReceiveFile(FileItem item)
     {
         if (item != ChosenFileItem)
             ChosenFileItem = item;
     }
 
-    private void GetFileContent(string path)
+    public bool SaveFile(string path, string content, string[] supportedTypes)
     {
-        if (string.IsNullOrEmpty(path) || !File.Exists(path)) TextBoxContent = string.Empty;
-
-        var temp = File.ReadAllLines(path);
-        FileContent = temp.ToList();
-        TextBoxContent = string.Join(" ", FileContent);
+        return supportedTypes.Contains(Path.GetExtension(path)) && WritableItems.SaveFile(path, content);
     }
-
-    private void SaveFile(string path)
-    {
-        if (string.IsNullOrEmpty(path))
-        {
-            File.WriteAllText(_tempSaveDirectory + DateTime.Now.ToFileTime() + ".txt", TextBoxContent);
-        }
-        else
-        {
-            File.WriteAllText(path, TextBoxContent);
-        }
-    }
-
-    //[ObservableProperty]
-    //private bool _isReadOnly = false;
-
-    //async Task RunInBackground(TimeSpan timeSpan, Action action)
-    //{
-    //    var periodicTimer = new PeriodicTimer(timeSpan);
-    //    while (await periodicTimer.WaitForNextTickAsync())
-    //    {
-    //        action();
-    //    }
-    //}
-
-    //_ = RunInBackground(TimeSpan.FromSeconds(1), () => Console.WriteLine("Printing"));
 }

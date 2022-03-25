@@ -20,7 +20,21 @@
     <UserControl.Resources>
 
         <!--  TODO fix wrapping  -->
-        <Style x:Key="WrappingTreeViewItem" TargetType="{x:Type TreeViewItem}">
+        <HierarchicalDataTemplate DataType="{x:Type models:DirectoryItem}" ItemsSource="{Binding Items}">
+            <TextBlock
+                Text="{Binding Path=Name}"
+                TextWrapping="Wrap"
+                ToolTip="{Binding Path=Path}" />
+        </HierarchicalDataTemplate>
+
+        <DataTemplate DataType="{x:Type models:FileItem}">
+            <TextBlock
+                Text="{Binding Path=Name}"
+                TextWrapping="Wrap"
+                ToolTip="{Binding Path=Path}" />
+        </DataTemplate>
+
+        <Style x:Key="TreeViewWrap" TargetType="{x:Type TreeViewItem}">
             <Style.Triggers>
                 <Trigger Property="VirtualizingPanel.IsVirtualizing" Value="True">
                     <Setter Property="ItemsControl.ItemsPanel">
@@ -63,9 +77,12 @@
                     <ControlTemplate TargetType="{x:Type TreeViewItem}">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MinWidth="19" />
+                                <ColumnDefinition
+                                    x:Name="col1"
+                                    Width="Auto"
+                                    MinWidth="19" />
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition x:Name="col3" Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -181,38 +198,20 @@
             </Setter>
         </Style>
 
-        <HierarchicalDataTemplate
-            DataType="{x:Type models:DirectoryItem}"
-            ItemContainerStyle="{StaticResource WrappingTreeViewItem}"
-            ItemsSource="{Binding Items}">
-            <TextBlock
-                Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Path=ActualWidth}"
-                Text="{Binding Path=Name}"
-                ToolTip="{Binding Path=Path}" />
-        </HierarchicalDataTemplate>
-
-        <DataTemplate DataType="{x:Type models:FileItem}">
-            <TextBlock
-                Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Path=ActualWidth}"
-                Text="{Binding Path=Name}"
-                ToolTip="{Binding Path=Path}" />
-        </DataTemplate>
-
-
-
-
-
     </UserControl.Resources>
-    <Grid Margin="8">
-        <TreeView
-            x:Name="TreeViewControl"
-            ItemsSource="{Binding Files}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectedItemChanged">
-                    <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" CommandParameter="{Binding ElementName=TreeViewControl, Path=SelectedItem}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </TreeView>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <TreeView
+                x:Name="TreeViewControl"
+                ItemContainerStyle="{StaticResource TreeViewWrap}"
+                ItemsSource="{Binding Files}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectedItemChanged">
+                        <i:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}" CommandParameter="{Binding ElementName=TreeViewControl, Path=SelectedItem}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TreeView>
+        </ScrollViewer>
     </Grid>
 </UserControl>

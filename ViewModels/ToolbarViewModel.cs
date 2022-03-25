@@ -7,8 +7,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 
+using TextEditor.Events;
 using TextEditor.Models;
-using TextEditor.ViewModels.Events;
 
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
@@ -74,7 +74,9 @@ public partial class ToolbarViewModel : ObservableRecipient
     [ICommand]
     private void Save()
     {
-        Messenger.Send(new SaveContentEvent());
+        var types = Messenger.Send<SupportedTypesMessage>().Response;
+        var temporarySavePath = Messenger.Send<TemporarySaveFolderMessage>().Response;
+        Messenger.Send(new SaveContentEvent((temporarySavePath, types)));
     }
 
     [ICommand]

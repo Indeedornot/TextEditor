@@ -1,28 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
-namespace TextEditor.Views
+using TextEditor.Helpers;
+
+namespace TextEditor.Views;
+
+/// <summary>
+/// Interaction logic for TextPresenter.xaml
+/// </summary>
+public partial class TextPresenter : UserControl
 {
-    /// <summary>
-    /// Interaction logic for TextPresenter.xaml
-    /// </summary>
-    public partial class TextPresenter : UserControl
+    public TextPresenter()
     {
-        public TextPresenter()
+        InitializeComponent();
+    }
+
+    private void ScrollChanged(object sender, ScrollChangedEventArgs e)
+    {
+        if (Equals(sender, sv1))
         {
-            InitializeComponent();
+            var sv2ScrollViewer = sv2.FindChild<ScrollViewer>();
+            sv2ScrollViewer?.ScrollToHorizontalOffset(e.HorizontalOffset);
+            sv2ScrollViewer?.ScrollToVerticalOffset(e.VerticalOffset);
+        }
+
+        else
+        {
+            var sv1ScrollViewer = sv1.FindChild<ScrollViewer>();
+            sv1ScrollViewer?.ScrollToHorizontalOffset(e.HorizontalOffset);
+            sv1ScrollViewer?.ScrollToVerticalOffset(e.VerticalOffset);
         }
     }
 }
