@@ -51,20 +51,22 @@ public partial class SidebarViewModel : ObservableRecipient
     private void ReceiveFile(FileItem fileItem)
     {
         if (!Files.Contains(fileItem))
+        {
             Files.Add(fileItem);
+        }
     }
 
     private void ReceiveFolder(DirectoryItem dirItem)
     {
         var types = Messenger.Send<SupportedTypesMessage>().Response;
         FolderName = dirItem.Name;
-        foreach (var fileItem in
-                        dirItem.Items.Where
-                            (item => item is FileItem
-                                 && types.Contains(Path.GetExtension(item.Path)
-                                 )))
+        var fileItems = dirItem
+                            .Items
+                            .InstanceOf<FileItem>()
+                            .Where(item => types.Contains(Path.GetExtension(item.Path)))
+        foreach (var fileItem in fileItems)
         {
-            ReceiveFile((FileItem)fileItem);
+            ReceiveFile(fileItem);
         }
     }
 
@@ -73,8 +75,11 @@ public partial class SidebarViewModel : ObservableRecipient
     [ICommand]
     private void SelectedItemChanged(object selectedItem)
     {
-
-        if (selectedItem is not Item temp) return;
+        var temp = selectedItem as Item;
+        if (temp == null) 
+        {
+            return;
+        }
         SelectedItem = temp;
     }
     //TreeView
