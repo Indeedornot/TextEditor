@@ -10,6 +10,7 @@ namespace TextEditor.ViewModels
 {
     public class MainWindowModel : ObservableRecipient
     {
+        private const string _TEMP_DIRECTORY_NAME = "TemporaryFiles";
         //request currently possible extensions
         //request temporary save path
         public MainWindowModel()
@@ -20,8 +21,7 @@ namespace TextEditor.ViewModels
 
         private string[] _supportedExtensions = new[] { ".txt" };
 
-        private readonly string _tempSaveDirectory =
-            Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.FullName //TextEditor Path
-            + @"\TemporaryFiles\";
+        private readonly string _tempSaveDirectory = Path.Combine(Path.GetTempPath(), _TEMP_DIRECTORY_NAME);
     }
+ 
 }
