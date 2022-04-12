@@ -55,6 +55,7 @@ public static class WritableItems
         else if (Directory.Exists(path) && IsDirectoryWritable(path))
         {
             File.WriteAllText(path + DateTime.Now.ToFileTime() + ".txt", content);
+            //combine
         }
 
         return true;
@@ -74,7 +75,7 @@ public static class WritableItems
 
     public static string GetFileContnetString(string path)
     {
-        return string.Join("\n", GetFileContentArray(path));
+        return string.Join(Environment.NewLine, GetFileContentArray(path));
     }
 
     public static bool IsFileLocked(FileInfo file)
@@ -82,7 +83,6 @@ public static class WritableItems
         try
         {
             using var stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
-            stream.Close();
         }
         catch (IOException)
         {
